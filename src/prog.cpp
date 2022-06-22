@@ -9,7 +9,7 @@
 
 
 Prog::Prog(GLFWwindow *w)
-    : m_win(w), m_cam(glm::vec3(0.f, 2.f, 0.f), glm::vec3(0.f, 0.f, 0.f))
+    : m_win(w), m_cam(glm::vec3(0.f, 6.f, 20.f), glm::vec3(0.f, glm::radians(45.f), glm::radians(-30.f)))
 {
     m_ri.add_shader("basic");
     m_ri.use_shader("basic");
@@ -37,10 +37,8 @@ void Prog::mainloop()
 
     Mesh m;
     std::vector<Source> sources = {
-        Source(glm::vec3(8.f, 0.f, 14.f), .4f, 2.3f, .1f),
-        Source(glm::vec3(19.f, 0.f, 4.f), .4f, 2.f, .2f),
-        Source(glm::vec3(8.f, 0.f, 6.f), .4f, 2.f, .1f),
-        Source(glm::vec3(3.f, 0.f, 2.f), .6f, 2.f, .1f)
+        Source(glm::vec3(5.f, 0.f, 10.f), .4f, 2.f, .1f),
+        Source(glm::vec3(15.f, 0.f, 10.f), .4f, 2.f, .1f)
     };
 
     while (!glfwWindowShouldClose(m_win))

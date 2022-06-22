@@ -70,23 +70,21 @@ void Mesh::update(const std::vector<Source> &sources)
         int s = 200;
         size_t idx = m_indices[i];
 
-        glm::vec3 normals[8] = {
+        glm::vec3 normals[6] = {
             normal(idx - s - 1, idx - 1),
             normal(idx - s, idx - s - 1),
-            normal(idx - s + 1, idx - s),
-            normal(idx + 1, idx - s + 1),
+            normal(idx + 1, idx - s),
             normal(idx + s + 1, idx + 1),
             normal(idx + s, idx + s + 1),
-            normal(idx + s - 1, idx + s),
-            normal(idx - 1, idx + s - 1)
+            normal(idx - 1, idx + s)
         };
 
         glm::vec3 avg(0.f, 0.f, 0.f);
 
-        for (int j = 0; j < 8; ++j)
+        for (int j = 0; j < 6; ++j)
             avg += normals[j];
 
-        avg /= 8.f;
+        avg /= 6.f;
 
         m_verts[idx].norm = avg;
     }
