@@ -9,7 +9,7 @@
 
 
 Prog::Prog(GLFWwindow *w)
-    : m_win(w), m_cam(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f))
+    : m_win(w), m_cam(glm::vec3(0.f, 2.f, 0.f), glm::vec3(0.f, 0.f, 0.f))
 {
     m_ri.add_shader("basic");
     m_ri.use_shader("basic");
@@ -36,6 +36,12 @@ void Prog::mainloop()
     glfwGetCursorPos(m_win, &prev_mx, &prev_my);
 
     Mesh m;
+    std::vector<Source> sources = {
+        Source(glm::vec3(8.f, 0.f, 14.f), .4f, 2.3f, .1f),
+        Source(glm::vec3(19.f, 0.f, 4.f), .4f, 2.f, .2f),
+        Source(glm::vec3(8.f, 0.f, 6.f), .4f, 2.f, .1f),
+        Source(glm::vec3(3.f, 0.f, 2.f), .6f, 2.f, .1f)
+    };
 
     while (!glfwWindowShouldClose(m_win))
     {
@@ -48,7 +54,7 @@ void Prog::mainloop()
         prev_mx = mx;
         prev_my = my;
 
-        m.update();
+        m.update(sources);
 
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

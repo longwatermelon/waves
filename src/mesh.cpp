@@ -24,6 +24,9 @@ Mesh::Mesh()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
 
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, norm));
+    glEnableVertexAttribArray(1);
+
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -38,25 +41,54 @@ Mesh::~Mesh()
 }
 
 
-void Mesh::update()
+void Mesh::update(const std::vector<Source> &sources)
 {
     /* for (size_t i = 0; i < m_verts.size(); ++i) */
     /*     m_verts[i].pos.y += .01f; */
 
-    float a = .4f;
-    float k = 4.f;
-    float w = .1f;
-
-    glm::vec3 orig(10.f, 0.f, 10.f);
-
-    for (size_t i = 0; i < m_verts.size(); ++i)
+    for (auto &v : m_verts)
     {
-        glm::vec3 pos = m_verts[i].pos;
+        float h = 0.f;
+        glm::vec3 pos = v.pos;
         pos.y = 0.f;
 
-        float h = a * sinf(k * glm::length(pos - orig) - w * (glfwGetTime() * 50.f));
-        m_verts[i].pos.y = std::fmax(h, 0.f);
-        /* m_verts[i].pos.y = h; */
+        for (auto &s : sources)
+            h += s.height_at(pos);
+
+        v.pos.y = h;
+    }
+
+    for (size_t i = 0; i < m_indices.size(); ++i)
+    {
+        auto normal = [&](size_t a, size_t b) {
+            if (a >= m_verts.size() || b >= m_verts.size() || a < 0 || b < 0)
+                return glm::vec3(0.f, 0.f, 0.f);
+
+            return glm::cross(m_verts[a].pos, m_verts[b].pos);
+        };
+
+        int s = 200;
+        size_t idx = m_indices[i];
+
+        glm::vec3 normals[8] = {
+            normal(idx - s - 1, idx - 1),
+            normal(idx - s, idx - s - 1),
+            normal(idx - s + 1, idx - s),
+            normal(idx + 1, idx - s + 1),
+            normal(idx + s + 1, idx + 1),
+            normal(idx + s, idx + s + 1),
+            normal(idx + s - 1, idx + s),
+            normal(idx - 1, idx + s - 1)
+        };
+
+        glm::vec3 avg(0.f, 0.f, 0.f);
+
+        for (int j = 0; j < 8; ++j)
+            avg += normals[j];
+
+        avg /= 8.f;
+
+        m_verts[idx].norm = avg;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, m_vb);
@@ -72,7 +104,7 @@ void Mesh::render(RenderInfo &ri)
     shader_mat4(ri.shader, std::string("view"), &ri.cam->view()[0][0]);
     shader_mat4(ri.shader, std::string("projection"), &ri.proj[0][0]);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    /* glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); */
     glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -88,7 +120,10 @@ void Mesh::generate_mesh()
     {
         for (int z = 0; z < s; ++z)
         {
-            m_verts.emplace_back(Vertex{ glm::vec3((float)x / 10.f, -1.f, (float)z / 10.f) });
+            m_verts.emplace_back(Vertex{
+                glm::vec3((float)x / 10.f, -1.f, (float)z / 10.f),
+                glm::vec3(0.f, 1.f, 0.f)
+            });
 
             unsigned int i = x * s + z;
 

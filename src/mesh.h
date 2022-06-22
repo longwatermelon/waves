@@ -1,4 +1,5 @@
 #pragma once
+#include "source.h"
 #include "render.h"
 #include <vector>
 #include <glm/glm.hpp>
@@ -6,6 +7,7 @@
 struct Vertex
 {
     glm::vec3 pos;
+    glm::vec3 norm;
 };
 
 class Mesh
@@ -14,7 +16,7 @@ public:
     Mesh();
     ~Mesh();
 
-    void update();
+    void update(const std::vector<Source> &sources);
     void render(RenderInfo &ri);
 
     void generate_mesh();
