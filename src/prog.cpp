@@ -37,8 +37,8 @@ void Prog::mainloop()
 
     Mesh m;
     std::vector<Source> sources = {
-        Source(glm::vec3(5.f, 0.f, 10.f), .4f, 2.f, .1f),
-        Source(glm::vec3(15.f, 0.f, 10.f), .4f, 2.f, .1f)
+        Source(glm::vec3(5.f, 0.f, 10.f), .4f, 2.f, .1f, 0.f),
+        Source(glm::vec3(15.f, 0.f, 10.f), .4f, 2.f, .1f, glm::radians(180.f))
     };
 
     while (!glfwWindowShouldClose(m_win))
