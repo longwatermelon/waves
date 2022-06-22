@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "shader.h"
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 
 Mesh::Mesh()
@@ -42,6 +43,22 @@ void Mesh::update()
     /* for (size_t i = 0; i < m_verts.size(); ++i) */
     /*     m_verts[i].pos.y += .01f; */
 
+    float a = .4f;
+    float k = 4.f;
+    float w = .1f;
+
+    glm::vec3 orig(10.f, 0.f, 10.f);
+
+    for (size_t i = 0; i < m_verts.size(); ++i)
+    {
+        glm::vec3 pos = m_verts[i].pos;
+        pos.y = 0.f;
+
+        float h = a * sinf(k * glm::length(pos - orig) - w * (glfwGetTime() * 50.f));
+        m_verts[i].pos.y = std::fmax(h, 0.f);
+        /* m_verts[i].pos.y = h; */
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, m_vb);
     glBufferSubData(GL_ARRAY_BUFFER, 0, m_verts.size() * sizeof(Vertex), m_verts.data());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -65,7 +82,7 @@ void Mesh::render(RenderInfo &ri)
 
 void Mesh::generate_mesh()
 {
-    int s = 50;
+    int s = 200;
 
     for (int x = 0; x < s; ++x)
     {
