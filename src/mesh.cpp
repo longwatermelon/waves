@@ -37,6 +37,17 @@ Mesh::~Mesh()
 }
 
 
+void Mesh::update()
+{
+    /* for (size_t i = 0; i < m_verts.size(); ++i) */
+    /*     m_verts[i].pos.y += .01f; */
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vb);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, m_verts.size() * sizeof(Vertex), m_verts.data());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
 void Mesh::render(RenderInfo &ri)
 {
     glm::mat4 model(1.f);

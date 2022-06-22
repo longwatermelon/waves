@@ -48,6 +48,8 @@ void Prog::mainloop()
         prev_mx = mx;
         prev_my = my;
 
+        m.update();
+
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -14,6 +14,7 @@ public:
     Mesh();
     ~Mesh();
 
+    void update();
     void render(RenderInfo &ri);
 
     void generate_mesh();
